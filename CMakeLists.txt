@@ -7,9 +7,10 @@ else()
 endif()
 
 # Define the project
-project(SimpleZmqExample 1.0.0.${TWEAK_NUM})
-
-add_definitions(-DVERSION_MAJOR=${PROJECT_VERSION_MAJOR} -DVERSION_MINOR=${PROJECT_VERSION_MINOR} -DVERSION_PATCH=${PROJECT_VERSION_PATCH} -DBUILD_NUMBER=${TWEAK_NUM})
+project(SimpleZmqExample)
+#project(SimpleZmqExample 1.0.0.${TWEAK_NUM})
+#
+#add_definitions(-DVERSION_MAJOR=${PROJECT_VERSION_MAJOR} -DVERSION_MINOR=${PROJECT_VERSION_MINOR} -DVERSION_PATCH=${PROJECT_VERSION_PATCH} -DBUILD_NUMBER=${TWEAK_NUM})
 
 # Setup the GNU install directories
 include(GNUInstallDirs)
@@ -84,14 +85,19 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/contrib)
 #add_subdirectory(${PROJECT_SOURCE_DIR}/docs)
 
 # Define addresses for service communication used in configuration file
-set(APPLIANCE_CONTROL_COMMAND_ADDRESS \"tcp://127.0.0.1:7770\")
-add_definitions(-DAPPLIANCE_CONTROL_COMMAND_ADDRESS=${APPLIANCE_CONTROL_COMMAND_ADDRESS})
-set(APPLIANCE_CONTROL_HEARTBEAT_ADDRESS \"tcp://127.0.0.1:7771\")
-add_definitions(-DAPPLIANCE_CONTROL_HEARTBEAT_ADDRESS=${APPLIANCE_CONTROL_HEARTBEAT_ADDRESS})
+set(HELLO_WORLD_SERVER_COMMAND_ADDRESS \"tcp://127.0.0.1:7770\")
+add_definitions(-DHELLO_WORLD_SERVER_COMMAND_ADDRESS=${HELLO_WORLD_SERVER_COMMAND_ADDRESS})
+set(HELLO_WORLD_SERVER_HEARTBEAT_ADDRESS \"tcp://127.0.0.1:7771\")
+add_definitions(-DHELLO_WORLD_SERVER_HEARTBEAT_ADDRESS=${HELLO_WORLD_SERVER_HEARTBEAT_ADDRESS})
 
-set(APPLIANCE_LOG_COMMAND_ADDRESS \"tcp://127.0.0.1:7772\")
+set(HELLO_WORLD_CLIENT_COMMAND_ADDRESS \"tcp://127.0.0.1:7772\")
+add_definitions(-DHELLO_WORLD_CLIENT_COMMAND_ADDRESS=${HELLO_WORLD_CLIENT_COMMAND_ADDRESS})
+set(HELLO_WORLD_CLIENT_HEARTBEAT_ADDRESS \"tcp://127.0.0.1:7773\")
+add_definitions(-DHELLO_WORLD_CLIENT_HEARTBEAT_ADDRESS=${HELLO_WORLD_CLIENT_HEARTBEAT_ADDRESS})
+
+set(APPLIANCE_LOG_COMMAND_ADDRESS \"tcp://127.0.0.1:7774\")
 add_definitions(-DAPPLIANCE_LOG_COMMAND_ADDRESS=${APPLIANCE_LOG_COMMAND_ADDRESS})
-set(APPLIANCE_LOG_HEARTBEAT_ADDRESS \"tcp://127.0.0.1:7773\")
+set(APPLIANCE_LOG_HEARTBEAT_ADDRESS \"tcp://127.0.0.1:7775\")
 add_definitions(-DAPPLIANCE_LOG_HEARTBEAT_ADDRESS=${APPLIANCE_LOG_HEARTBEAT_ADDRESS})
 
 # Default log level to use for spdlog loggers in the system
@@ -99,28 +105,24 @@ set(DEFAULT_SPDLOG_LOG_LEVEL info)
 add_definitions(-DDEFAULT_SPDLOG_LOG_LEVEL=${DEFAULT_SPDLOG_LOG_LEVEL})
 
 # Name to use for log file (syslog)
-set(APPLIANCE_LOG_FILE_NAME qflex_appliance.log)
-add_definitions(-DAPPLIANCE_LOG_FILE_NAME=${APPLIANCE_LOG_FILE_NAME})
+set(SIMPLE_ZMQ_EXAMPLE_LOG_FILE_NAME simple_zmq_example.log)
+add_definitions(-DSIMPLE_ZMQ_EXAMPLE_LOG_FILE_NAME=${SIMPLE_ZMQ_EXAMPLE_LOG_FILE_NAME})
 
 # Maximum size for log files set to 2 GB (syslog)
-set(APPLIANCE_MAX_LOG_SIZE_BYTES 2147482548)
-add_definitions(-DAPPLIANCE_MAX_LOG_SIZE_BYTES=${APPLIANCE_MAX_LOG_SIZE_BYTES})
+set(SIMPLE_ZMQ_EXAMPLE_MAX_LOG_SIZE_BYTES 2147482548)
+add_definitions(-DSIMPLE_ZMQ_EXAMPLE_MAX_LOG_SIZE_BYTES=${SIMPLE_ZMQ_EXAMPLE_MAX_LOG_SIZE_BYTES})
 
 # Minimum size for log files set to 1 MB (syslog)
-set(APPLIANCE_MIN_LOG_SIZE_BYTES 1048576)
-add_definitions(-DAPPLIANCE_MIN_LOG_SIZE_BYTES=${APPLIANCE_MIN_LOG_SIZE_BYTES})
+set(SIMPLE_ZMQ_EXAMPLE_MIN_LOG_SIZE_BYTES 1048576)
+add_definitions(-DSIMPLE_ZMQ_EXAMPLE_MIN_LOG_SIZE_BYTES=${SIMPLE_ZMQ_EXAMPLE_MIN_LOG_SIZE_BYTES})
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src)
-
-add_subdirectory(${PROJECT_SOURCE_DIR}/linux_distribution)
-
-add_subdirectory(${PROJECT_SOURCE_DIR}/packages)
 
 if (BUILD_TESTS)
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test")
 endif (BUILD_TESTS)
 
-set(UNCRUSTIFY_CONFIG_FILE ${PROJECT_SOURCE_DIR}/data/hsm_uncrustify.cfg)
+set(UNCRUSTIFY_CONFIG_FILE ${PROJECT_SOURCE_DIR}/data/project_uncrustify.cfg)
 
 add_custom_target(indent
         find ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/test -type f \( -iname "*.c" -o -iname "*.cpp" -o -iname "*.h" -o -iname "*.hpp" \) -exec uncrustify -c ${UNCRUSTIFY_CONFIG_FILE} --no-backup {} \;
@@ -134,11 +136,3 @@ pkg_check_modules(ZMQ REQUIRED IMPORTED_TARGET libzmq)
 # Define root path for installation of SimpleZmqExample files
 set(SIMPLE_ZMQ_EXAMPLE_BASE_INSTALL_PATH opt/simple_zmq_example)
 add_definitions(-DSIMPLE_ZMQ_EXAMPLE_BASE_INSTALL_PATH=${SIMPLE_ZMQ_EXAMPLE_BASE_INSTALL_PATH})
-
-add_executable(SimpleZmqExample SimpleHelloWorld.cpp)
-
-add_executable(HelloWorldServer HelloWorldServer.cpp)
-target_link_libraries(HelloWorldServer zmq)
-
-add_executable(HelloWorldClient HelloWorldClient.cpp)
-target_link_libraries(HelloWorldClient zmq)
