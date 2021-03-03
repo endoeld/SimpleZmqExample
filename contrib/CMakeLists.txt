@@ -89,6 +89,20 @@ if (BUILD_CPPZMQ)
 endif()
 
 ###########################################################
+# fmt
+###########################################################
+option(BUILD_FMT "Build fmt" ON)
+if (BUILD_FMT)
+    ExternalProject_add(fmt_project
+            SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/fmtlib
+            BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/fmtlib
+            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${SIMPLE_ZMQ_EXAMPLE_SYS_ROOT} -DFMT_TEST=OFF)
+    add_library(fmt INTERFACE)
+    add_dependencies(fmt fmt_project)
+    target_include_directories(fmt INTERFACE ${SIMPLE_ZMQ_EXAMPLE_SYS_ROOT}/include)
+endif()
+
+###########################################################
 # yaml-cpp
 ###########################################################
 option(BUILD_YAML_CPP "Build yaml-cpp" ON)

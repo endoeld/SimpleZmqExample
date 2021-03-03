@@ -12,4 +12,7 @@
 add_executable(HelloWorldServer
         ${CMAKE_CURRENT_SOURCE_DIR}/HelloWorldServer.cpp)
 
-target_link_libraries(HelloWorldServer fmt spdlog_api yaml-cpp)
+# JMR ToDo 20210303 - Figure out what's going with yaml-cpp not working properly; try to compare it to other project's yaml-cpp dir
+#target_link_libraries(HelloWorldServer fmt spdlog_api yaml-cpp)
+
+target_link_libraries(HelloWorldServer cppzmq PkgConfig::ZMQ fmt spdlog_api)

@@ -84,6 +84,9 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/contrib)
 # JMR ToDo 20210302 - Create docs dir and add initial documentation
 #add_subdirectory(${PROJECT_SOURCE_DIR}/docs)
 
+include(FindPkgConfig)
+pkg_check_modules(ZMQ REQUIRED IMPORTED_TARGET libzmq)
+
 # Define addresses for service communication used in configuration file
 set(HELLO_WORLD_SERVER_COMMAND_ADDRESS \"tcp://127.0.0.1:7770\")
 add_definitions(-DHELLO_WORLD_SERVER_COMMAND_ADDRESS=${HELLO_WORLD_SERVER_COMMAND_ADDRESS})
@@ -129,9 +132,6 @@ add_custom_target(indent
         COMMENT "Running Uncrustify"
         VERBATIM
         )
-
-include(FindPkgConfig)
-pkg_check_modules(ZMQ REQUIRED IMPORTED_TARGET libzmq)
 
 # Define root path for installation of SimpleZmqExample files
 set(SIMPLE_ZMQ_EXAMPLE_BASE_INSTALL_PATH opt/simple_zmq_example)
